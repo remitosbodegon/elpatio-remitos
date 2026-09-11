@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 """
 🍽️ EL BODEGÓN — Sistema de Remitos de Viandas
+✅ SIN Google Sheets ni Drive — Guarda todo en archivos locales
+✅ Mantiene TODA la estética, colores, firma, PDF, WhatsApp, empresas
 """
 
 FONDO_APP        = "#1C3C30"
@@ -21,15 +23,11 @@ CREMA_FONDO      = (247, 239, 228)
 NOMBRE_NEGOCIO     = "EL BODEGÓN"
 TITULO_APP         = "🍽️ Remitos - El Bodegón"
 SUBTITULO          = "Sistema de Entrega de Viandas"
-NOMBRE_HOJA_SHEETS = "Remitos El Bodegón"
-CORREO_SERVICIO    = "remitos-app@remitos-el-bodegon.iam.gserviceaccount.com"
-ALCANCE_GOOGLE     = [
-    "https://www.googleapis.com/auth/spreadsheets",
-    "https://www.googleapis.com/auth/drive"
-]
+
 GITHUB_USUARIO     = "remitosbodegon"
 GITHUB_REPO        = "mis-remitos"
 GITHUB_RAMA        = "main"
+
 ANCHO_FIRMA        = 600
 ALTO_FIRMA         = 260
 CARPETA_RECURSOS   = "recursos"
@@ -47,13 +45,18 @@ from PIL import Image
 import numpy as np
 from fpdf import FPDF
 from streamlit_drawable_canvas import st_canvas
-import gspread
-from google.oauth2.service_account import Credentials
 
 RUTA_LOGO = os.path.join(CARPETA_RECURSOS, "logo_bodegon.png") if os.path.exists(os.path.join(CARPETA_RECURSOS, "logo_bodegon.png")) else None
+
 os.makedirs(CARPETA_RECURSOS, exist_ok=True)
 os.makedirs(CARPETA_PDF, exist_ok=True)
 
+ARCHIVO_EMPRESAS = "empresas.json"
+ARCHIVO_REMITOS = "remitos.json"
+
+# ──────────────────────────────────────────────────
+# ESTADO DE LA APP
+# ──────────────────────────────────────────────────
 if "pagina" not in st.session_state:
     st.session_state.pagina = "nuevo"
 if "contador_formulario" not in st.session_state:
@@ -61,7 +64,11 @@ if "contador_formulario" not in st.session_state:
 if "remito_generado" not in st.session_state:
     st.session_state.remito_generado = False
 
+# ──────────────────────────────────────────────────
+# ESTILO Y DISEÑO — TAL CUAL LO TENÍAS ✅
+# ──────────────────────────────────────────────────
 st.set_page_config(page_title=TITULO_APP, page_icon="🍽️", layout="wide", initial_sidebar_state="collapsed")
+
 st.markdown(f"""
 <style>
     * {{ box-sizing: border-box; }}
@@ -207,6 +214,9 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
+# ──────────────────────────────────────────────────
+# NAVEGACIÓN
+# ──────────────────────────────────────────────────
 st.markdown('<div class="nav-card">', unsafe_allow_html=True)
 col1, col2, col3 = st.columns(3)
 with col1:
@@ -228,9 +238,9 @@ with col3:
 st.markdown("</div>", unsafe_allow_html=True)
 st.markdown("---")
 
-ARCHIVO_EMPRESAS = "empresas.json"
-ARCHIVO_REMITOS = "remitos.json"
-
+# ──────────────────────────────────────────────────
+# FUNCIONES DE GUARDADO EN ARCHIVOS (SIN GOOGLE)
+# ──────────────────────────────────────────────────
 def cargar_json(ruta, valor_default):
     if not os.path.exists(ruta):
         return valor_default
@@ -253,20 +263,6 @@ def guardar_json(ruta, datos):
             os.remove(ruta_tmp)
         st.error(f"❌ Error: {str(e)[:60]}")
 
-def obtener_credenciales():
-    return Credentials.from_service_account_file("clave_google.json", scopes=ALCANCE_GOOGLE)
-
-def conectar_google_sheets():
-    try:
-        gc = gspread.authorize(obtener_credenciales())
-        return gc.open(NOMBRE_HOJA_SHEETS).sheet1
-    except FileNotFoundError:
-        st.error("❌ Falta clave_google.json")
-        return None
-    except Exception as e:
-        st.error(f"❌ Error Google: {str(e)[:60]}")
-        return None
-
 def obtener_token_github():
     token = os.environ.get("GITHUB_TOKEN")
     if token:
@@ -276,6 +272,9 @@ def obtener_token_github():
             return f.read().strip()
     return None
 
+# ──────────────────────────────────────────────────
+# SUBIR PDF A GITHUB
+# ──────────────────────────────────────────────────
 def subir_pdf_a_github(ruta_archivo, numero_remito):
     token = obtener_token_github()
     if not token:
@@ -299,6 +298,9 @@ def subir_pdf_a_github(ruta_archivo, numero_remito):
         st.error(f"❌ Error subiendo: {str(e)[:60]}")
     return ""
 
+# ──────────────────────────────────────────────────
+# DETECCIÓN DE FIRMA
+# ──────────────────────────────────────────────────
 def hay_firma(img):
     if img is None:
         return False
@@ -310,6 +312,9 @@ def hay_firma(img):
     except Exception:
         return False
 
+# ──────────────────────────────────────────────────
+# MENSAJE DE WHATSAPP
+# ──────────────────────────────────────────────────
 def mensaje_whatsapp(num, emp, fecha, recibe, pdf=""):
     return (
         f"● REMITO N° {num:04d} — Entrega a: {emp}\n\n"
@@ -323,6 +328,9 @@ def enlace_whatsapp(tel, msg):
     t = "".join(c for c in tel if c.isdigit())
     return f"https://wa.me/{t}?text={urllib.parse.quote(msg)}"
 
+# ──────────────────────────────────────────────────
+# GENERAR PDF CON DISEÑO ORIGINAL
+# ──────────────────────────────────────────────────
 def crear_pdf(numero, fecha, emp, tel, cant, recibe, img_firma):
     pdf = FPDF(format="A4", unit="mm")
     pdf.add_page()
@@ -410,24 +418,66 @@ def crear_pdf(numero, fecha, emp, tel, cant, recibe, img_firma):
     pdf.output(ruta_pdf)
     return ruta_pdf
 
+# ──────────────────────────────────────────────────
+# PANTALLA: GESTIONAR EMPRESAS
+# ──────────────────────────────────────────────────
+def pantalla_empresas():
+    st.markdown(f"""<div class="tarjeta"><h2>🏢 Gestionar Empresas</h2>""", unsafe_allow_html=True)
+    empresas = cargar_json(ARCHIVO_EMPRESAS, [])
+    
+    st.subheader("Agregar Nueva Empresa")
+    nom = st.text_input("Nombre de Empresa")
+    tel = st.text_input("Teléfono")
+    if st.button("✅ Guardar Empresa", type="primary"):
+        if nom.strip() and tel.strip():
+            empresas.append({"nombre": nom.strip(), "telefono": tel.strip()})
+            guardar_json(ARCHIVO_EMPRESAS, empresas)
+            st.success(f"✅ Empresa '{nom}' agregada")
+            st.rerun()
+        else:
+            st.error("❌ Completá nombre y teléfono")
+    
+    st.markdown("---")
+    st.subheader("Empresas Registradas")
+    if not empresas:
+        st.info("No hay empresas cargadas todavía")
+    else:
+        for i, e in enumerate(empresas):
+            col_a, col_b, col_c = st.columns([0.45, 0.45, 0.1])
+            col_a.write(f"🏢 **{e['nombre']}**")
+            col_b.write(f"📞 {e['telefono']}")
+            if col_c.button("❌", key=f"del_emp_{i}"):
+                empresas.pop(i)
+                guardar_json(ARCHIVO_EMPRESAS, empresas)
+                st.rerun()
+    
+    st.markdown("</div>", unsafe_allow_html=True)
+
+# ──────────────────────────────────────────────────
+# PANTALLA: NUEVO REMITO
+# ──────────────────────────────────────────────────
 def pantalla_nuevo_remito():
     st.markdown(f"""<div class="tarjeta"><h2>📋 Generar Nuevo Remito</h2>""", unsafe_allow_html=True)
     empresas = cargar_json(ARCHIVO_EMPRESAS, [])
     remitos = cargar_json(ARCHIVO_REMITOS, [])
+    
     if not empresas:
         st.warning("⚠️ Cargá al menos una empresa primero en 'Gestionar Empresas'")
         st.markdown("</div>", unsafe_allow_html=True)
         return
+    
     if not remitos:
         numero = 1
     else:
         numero = max([r.get("numero", 0) for r in remitos]) + 1
+    
     fecha = datetime.date.today().strftime("%d/%m/%Y")
     emp_nombres = [e["nombre"] for e in empresas]
     emp_seleccion = st.selectbox("🏢 Seleccionar Empresa", emp_nombres, disabled=st.session_state.remito_generado)
     emp_datos = next(e for e in empresas if e["nombre"] == emp_seleccion)
     cantidad = st.number_input("🍽️ Cantidad de Viandas", min_value=1, value=1, disabled=st.session_state.remito_generado)
     recibe = st.text_input("👤 Quien Recibe (Nombre y Apellido)", disabled=st.session_state.remito_generado)
+    
     st.markdown("### ✍️ Firma de Recibido")
     canvas_firma = st_canvas(
         stroke_width=2,
@@ -438,6 +488,7 @@ def pantalla_nuevo_remito():
         return_image_data=True,
         key=f"firma_{st.session_state.contador_formulario}"
     )
+    
     col_btn1, col_btn2 = st.columns(2)
     with col_btn1:
         generar = st.button("✅ GENERAR REMITO", type="primary", disabled=st.session_state.remito_generado)
@@ -446,6 +497,7 @@ def pantalla_nuevo_remito():
             st.session_state.remito_generado = False
             st.session_state.contador_formulario += 1
             st.rerun()
+    
     if generar:
         if not recibe.strip():
             st.error("❌ Escribí el nombre y apellido de quien recibe")
@@ -455,9 +507,11 @@ def pantalla_nuevo_remito():
             ruta_pdf = crear_pdf(numero, fecha, emp_datos["nombre"], emp_datos["telefono"], cantidad, recibe, img_firma)
         with st.spinner("Subiendo PDF a GitHub..."):
             enlace_pdf = subir_pdf_a_github(ruta_pdf, numero)
+        
         if not enlace_pdf:
             st.error("❌ No se pudo subir el PDF")
             return
+        
         remito = {
             "numero": numero,
             "fecha": fecha,
@@ -469,12 +523,10 @@ def pantalla_nuevo_remito():
         }
         remitos.append(remito)
         guardar_json(ARCHIVO_REMITOS, remitos)
-        hoja = conectar_google_sheets()
-        if hoja:
-            fila = [numero, fecha, emp_datos["nombre"], emp_datos["telefono"], cantidad, recibe, enlace_pdf]
-            hoja.append_row(fila)
+        
         st.session_state.remito_generado = True
-        st.success(f"✅ Remito N° {numero:04d} generado y subido correctamente!")
+        st.success(f"✅ Remito N° {numero:04d} generado y guardado correctamente!")
+        
         placeholder = st.empty()
         with placeholder:
             st.markdown(f"""
@@ -494,8 +546,10 @@ def pantalla_nuevo_remito():
                 font-weight:bold; font-size:16px; margin-top:10px;
             ">📲 ENVIAR POR WHATSAPP</a>
             """, unsafe_allow_html=True)
+        
         for segundo in range(30):
             time.sleep(1)
+        
         placeholder.empty()
         with placeholder:
             st.markdown(f"""
@@ -505,11 +559,16 @@ def pantalla_nuevo_remito():
                 <span class="aviso-listo">✅ ¡YA ESTÁ LISTO PARA VER!</span>
             </div>
             """, unsafe_allow_html=True)
+    
     st.markdown("</div>", unsafe_allow_html=True)
 
+# ──────────────────────────────────────────────────
+# PANTALLA: HISTORIAL
+# ──────────────────────────────────────────────────
 def pantalla_historial():
     st.markdown(f"""<div class="tarjeta"><h2>📜 Historial de Remitos</h2>""", unsafe_allow_html=True)
     remitos = cargar_json(ARCHIVO_REMITOS, [])
+    
     if not remitos:
         st.info("No hay remitos generados todavía")
     else:
@@ -534,6 +593,9 @@ def pantalla_historial():
                     """, unsafe_allow_html=True)
     st.markdown("</div>", unsafe_allow_html=True)
 
+# ──────────────────────────────────────────────────
+# ENRUTADOR DE PÁGINAS
+# ──────────────────────────────────────────────────
 if st.session_state.pagina == "empresas":
     pantalla_empresas()
 elif st.session_state.pagina == "nuevo":
