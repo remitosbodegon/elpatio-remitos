@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 """
 🍽️ EL PATIO GROUP 427 — Sistema de Remitos de Viandas
-✅ Mensaje WhatsApp EXACTO como querés
+✅ Mensaje WhatsApp personalizado
 ✅ Botón BORRAR en Historial 🗑️
-✅ WhatsApp APARECE ENSEGUIDA — PDF espera 30s
-✅ Archivo remitos.json se crea solo al generar el primer remito
+✅ WhatsApp al instante — PDF espera 30s
+✅ Repositorio: elpatio-remitos
 """
 
-FONDO_APP        = "#0B3D2E"   # ← nuevo verde oscuro pedido
-FONDO_TARJETA    = "#1D4B3A"   # un tono más claro para dar profundidad sobre el fondo nuevo
+FONDO_APP        = "#0B3D2E"
+FONDO_TARJETA    = "#1D4B3A"
 FONDO_CAMPOS     = "#26604A"
 TEXTO_CLARO      = "#F7EFE4"
 TEXTO_GRIS       = "#C9BFB3"
@@ -18,19 +18,17 @@ DORADO           = "#D4B86A"
 DORADO_CLARO     = "#EAD78A"
 VERDE_WSP        = "#25D366"
 RGB_DORADO       = (212, 184, 106)
-RGB_VERDE_HEADER = (11, 61, 46)     # = #0B3D2E, usado también en el encabezado del PDF
+RGB_VERDE_HEADER = (11, 61, 46)
 RGB_VERDE_LINEAS = (60, 124, 99)
 CREMA_FONDO      = (247, 239, 228)
 
 NOMBRE_NEGOCIO     = "EL PATIO GROUP 427"
 TITULO_APP         = "Remitos - El Patio Group 427"
 SUBTITULO          = "Sistema de Entrega de Viandas"
-EMPRESA_SLUG       = "ElPatioGroup427"   # se usa para nombrar los archivos PDF
-
-GITHUB_USUARIO     = "remitosbodegon"    # ⚠️ usuario/repo reales de GitHub: actualizalos solo si los renombraste ahí
-GITHUB_REPO        = "mis-remitos"
+EMPRESA_SLUG       = "ElPatioRemitos"
+GITHUB_USUARIO     = "remitosbodegon"
+GITHUB_REPO        = "elpatio-remitos"   # ✅ NOMBRE NUEVO DEL REPOSITORIO
 GITHUB_RAMA        = "main"
-
 ANCHO_FIRMA        = 600
 ALTO_FIRMA         = 260
 CARPETA_RECURSOS   = "recursos"
