@@ -71,6 +71,12 @@ if "remito_generado" not in st.session_state:
 # ──────────────────────────────────────────────────
 st.set_page_config(page_title=TITULO_APP, page_icon="🍽️", layout="wide", initial_sidebar_state="collapsed")
 
+# ✅ ÍCONO PERSONALIZADO — PARA QUE NO APAREZCA EL DE STREAMLIT
+st.markdown("""
+<link rel="apple-touch-icon" href="https://remitosbodegon.github.io/mis-remitos/recursos/icono-app.png">
+<link rel="icon" type="image/png" href="https://remitosbodegon.github.io/mis-remitos/recursos/icono-app.png">
+""", unsafe_allow_html=True)
+
 st.markdown(f"""
 <style>
     * {{ box-sizing: border-box; }}
