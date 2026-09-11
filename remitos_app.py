@@ -71,10 +71,8 @@ if "remito_generado" not in st.session_state:
 # ──────────────────────────────────────────────────
 st.set_page_config(page_title=TITULO_APP, page_icon="", layout="wide", initial_sidebar_state="collapsed")
 
-# ✅ TU LOGO COMO ÍCONO
 st.markdown("""
 <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/remitosbodegon/mis-remitos/main/recursos/icono-app.png">
-<link rel="apple-touch-icon" href="https://raw.githubusercontent.com/remitosbodegon/mis-remitos/main/recursos/icono-app.png?v=4">
 """, unsafe_allow_html=True)
 
 st.markdown(f"""
