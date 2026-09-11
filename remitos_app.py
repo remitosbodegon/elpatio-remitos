@@ -7,6 +7,7 @@
 ✅ Buscador de remitos
 ✅ Fecha y HORA automáticas
 ✅ Fondo oscuro / PDF / WhatsApp
+✅ ✅ ESTILO CORREGIDO ✅ ✅
 """
 
 # ==================================================
@@ -37,6 +38,26 @@ import base64
 import requests
 from datetime import datetime
 from fpdf import FPDF
+
+# ==================================================
+# 🎨 ESTILO DE LA APP — PRIMERO DE TODO ✅
+# ==================================================
+st.set_page_config(page_title=TITULO_APP, page_icon="🍽️", layout="wide")
+
+st.markdown(f"""
+    <style>
+    .stApp {{ background-color: {COLOR_FONDO}; color: {COLOR_TEXTO}; }}
+    h1, h2, h3 {{ color: {COLOR_ACENTO}; }}
+    .stTextInput > div > div > input,
+    .stTextArea > div > textarea,
+    .stSelectbox > div > div > div {{
+        background-color: {COLOR_CAJAS}; color: {COLOR_TEXTO};
+    }}
+    </style>
+""", unsafe_allow_html=True)
+
+st.title(TITULO_APP)
+st.subheader(SUBTITULO)
 
 # ==================================================
 # 💾 ARCHIVO Y FUNCIONES DE GUARDADO
@@ -104,26 +125,6 @@ def guardar_remito(datos_remito):
     except Exception as e:
         st.error(f"Error guardando: {str(e)[:60]}")
         return False
-
-# ==================================================
-# 🎨 ESTILO DE LA APP
-# ==================================================
-st.set_page_config(page_title=TITULO_APP, page_icon="🍽️", layout="wide")
-
-st.markdown(f"""
-    <style>
-    .stApp {{ background-color: {COLOR_FONDO}; color: {COLOR_TEXTO}; }}
-    h1, h2, h3 {{ color: {COLOR_ACENTO}; }}
-    .stTextInput > div > div > input,
-    .stTextArea > div > textarea,
-    .stSelectbox > div > div > div {{
-        background-color: {COLOR_CAJAS}; color: {COLOR_TEXTO};
-    }}
-    </style>
-""", unsafe_allow_html=True)
-
-st.title(TITULO_APP)
-st.subheader(SUBTITULO)
 
 # ==================================================
 # 📄 GENERAR REMITO EN PDF
