@@ -321,7 +321,7 @@ def subir_pdf_a_github(ruta_archivo, numero_remito):
             resp = requests.put(url, headers=headers, json=body)
             if resp.status_code in (200, 201):
                 # ✅ DIRECCIÓN QUE SÍ FUNCIONA
-                return f"https://remitosbodegon.github.io/mis-remitos/{nombre}"
+                return f"https://remitosbodegon.github.io/elpatio-remitos/{nombre}"
     except Exception as e:
         st.error(f"❌ Error subiendo: {str(e)[:60]}")
     return ""
