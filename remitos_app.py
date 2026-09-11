@@ -304,7 +304,22 @@ def guardar_json(ruta, datos):
 # ==================================================
 def obtener_credenciales():
     try:
-        return Credentials.from_service_account_file("clave_google.json", scopes=ALCANCE_GOOGLE)
+        creds = Credentials.from_service_account_info(
+            {
+                "type": "service_account",
+                "project_id": "remitos-el-bodegon",
+                "private_key_id": "PONÉ-AQUÍ-TU-NUEVO-private_key_id",
+                "private_key": "-----BEGIN PRIVATE KEY-----\nPONÉ-TODA-LA-CLAVE-AQUÍ-SIN-ROMPER-LAS-BARRA-SIGUIENDO-TAL-CUAL\n-----END PRIVATE KEY-----\n",
+                "client_email": "remitos-app@remitos-el-bodegon.iam.gserviceaccount.com",
+                "client_id": "117219117316162090301",
+                "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+                "token_uri": "https://oauth2.googleapis.com/token",
+                "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+                "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/remitos-app%40remitos-el-bodegon.iam.gserviceaccount.com"
+            },
+            scopes=ALCANCE_GOOGLE
+        )
+        return creds
     except Exception as e:
         st.error(f"❌ Error: {str(e)[:80]}")
         return None
