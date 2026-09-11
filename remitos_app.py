@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """
 🍽️ EL BODEGÓN — Sistema de Remitos de Viandas
-✅ SIN Google Sheets ni Drive — Guarda todo en archivos locales
-✅ Mantiene TODA la estética, colores, firma, PDF, WhatsApp, empresas
+✅ SIN Google Sheets ni Drive
+✅ WhatsApp APARECE ENSEGUIDA — Solo el PDF espera 30s
 """
 
 FONDO_APP        = "#1C3C30"
@@ -65,7 +65,7 @@ if "remito_generado" not in st.session_state:
     st.session_state.remito_generado = False
 
 # ──────────────────────────────────────────────────
-# ESTILO Y DISEÑO — TAL CUAL LO TENÍAS ✅
+# ESTILO
 # ──────────────────────────────────────────────────
 st.set_page_config(page_title=TITULO_APP, page_icon="🍽️", layout="wide", initial_sidebar_state="collapsed")
 
@@ -239,7 +239,7 @@ st.markdown("</div>", unsafe_allow_html=True)
 st.markdown("---")
 
 # ──────────────────────────────────────────────────
-# FUNCIONES DE GUARDADO EN ARCHIVOS (SIN GOOGLE)
+# FUNCIONES DE GUARDADO
 # ──────────────────────────────────────────────────
 def cargar_json(ruta, valor_default):
     if not os.path.exists(ruta):
@@ -329,7 +329,7 @@ def enlace_whatsapp(tel, msg):
     return f"https://wa.me/{t}?text={urllib.parse.quote(msg)}"
 
 # ──────────────────────────────────────────────────
-# GENERAR PDF CON DISEÑO ORIGINAL
+# GENERAR PDF
 # ──────────────────────────────────────────────────
 def crear_pdf(numero, fecha, emp, tel, cant, recibe, img_firma):
     pdf = FPDF(format="A4", unit="mm")
@@ -454,7 +454,7 @@ def pantalla_empresas():
     st.markdown("</div>", unsafe_allow_html=True)
 
 # ──────────────────────────────────────────────────
-# PANTALLA: NUEVO REMITO
+# PANTALLA: NUEVO REMITO — CORREGIDO ✅
 # ──────────────────────────────────────────────────
 def pantalla_nuevo_remito():
     st.markdown(f"""<div class="tarjeta"><h2>📋 Generar Nuevo Remito</h2>""", unsafe_allow_html=True)
@@ -527,26 +527,30 @@ def pantalla_nuevo_remito():
         st.session_state.remito_generado = True
         st.success(f"✅ Remito N° {numero:04d} generado y guardado correctamente!")
         
+        # ✅ WHATSAPP APARECE ENSEGUIDA — SIN ESPERAR
+        msj = mensaje_whatsapp(numero, emp_datos["nombre"], fecha, recibe, enlace_pdf)
+        link_wsp = enlace_whatsapp(emp_datos["telefono"], msj)
+        st.markdown(f"""
+        <a href="{link_wsp}" target="_blank" style="
+            display:inline-block; padding:12px 24px;
+            background:{VERDE_WSP}; color:white !important;
+            border-radius:12px; text-decoration:none;
+            font-weight:bold; font-size:16px; margin:10px 0;
+        ">📲 ENVIAR POR WHATSAPP</a>
+        """, unsafe_allow_html=True)
+        
+        # ✅ SOLO EL ENLACE DEL PDF MUESTRA EL CONTADOR
         placeholder = st.empty()
         with placeholder:
             st.markdown(f"""
             <div class="caja-link-pdf">
                 <strong>📄 Enlace al Remito PDF:</strong><br>
                 <a href="{enlace_pdf}" target="_blank">{enlace_pdf}</a>
-                <span class="aviso-espera">⏳ El remito tardará 30 segundos en poder visualizarse</span>
+                <span class="aviso-espera">⏳ Esperá 30 segundos para poder ver el PDF</span>
             </div>
             """, unsafe_allow_html=True)
-            msj = mensaje_whatsapp(numero, emp_datos["nombre"], fecha, recibe, enlace_pdf)
-            link_wsp = enlace_whatsapp(emp_datos["telefono"], msj)
-            st.markdown(f"""
-            <a href="{link_wsp}" target="_blank" style="
-                display:inline-block; padding:12px 24px;
-                background:{VERDE_WSP}; color:white !important;
-                border-radius:12px; text-decoration:none;
-                font-weight:bold; font-size:16px; margin-top:10px;
-            ">📲 ENVIAR POR WHATSAPP</a>
-            """, unsafe_allow_html=True)
         
+        # Contar 30 segundos y cambiar el aviso
         for segundo in range(30):
             time.sleep(1)
         
