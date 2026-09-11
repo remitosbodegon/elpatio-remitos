@@ -254,7 +254,9 @@ def guardar_json(ruta, datos):
         st.error(f"❌ Error: {str(e)[:60]}")
 
 def obtener_credenciales():
-    return Credentials.from_service_account_file("clave_google.json", scopes=ALCANCE_GOOGLE)
+    import json
+    clave = json.loads(st.secrets["CLAVE_GOOGLE"])
+    return Credentials.from_service_account_info(clave, scopes=ALCANCE_GOOGLE)
 
 def conectar_google_sheets():
     try:
