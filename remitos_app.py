@@ -69,10 +69,10 @@ if "remito_generado" not in st.session_state:
 # ──────────────────────────────────────────────────
 # ESTILO
 # ──────────────────────────────────────────────────
-st.set_page_config(page_title=TITULO_APP, page_icon="", layout="wide", initial_sidebar_state="collapsed")
-
+st.set_page_config(page_title=TITULO_APP, page_icon="🍽️", layout="wide", initial_sidebar_state="collapsed")
 st.markdown("""
-<link rel="icon" type="image/png" href="https://raw.githubusercontent.com/remitosbodegon/mis-remitos/main/recursos/icono-app.png">
+<link rel="icon" type="image/png" sizes="180x180" href="https://raw.githubusercontent.com/remitosbodegon/mis-remitos/main/recursos/icono-app.png?v=5">
+<link rel="apple-touch-icon" sizes="180x180" href="https://raw.githubusercontent.com/remitosbodegon/mis-remitos/main/recursos/icono-app.png?v=5">
 """, unsafe_allow_html=True)
 
 st.markdown(f"""
