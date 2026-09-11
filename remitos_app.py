@@ -304,7 +304,9 @@ def guardar_json(ruta, datos):
 # ==================================================
 def obtener_credenciales():
     try:
-        return Credentials.from_service_account_file("clave_google.json", scopes=ALCANCE_GOOGLE)
+        import json
+        clave = json.loads(st.secrets["CLAVE_GOOGLE_JSON"])
+        return Credentials.from_service_account_info(clave, scopes=ALCANCE_GOOGLE)
     except Exception as e:
         st.error(f"❌ Error de credenciales: {str(e)[:80]}")
         return None
