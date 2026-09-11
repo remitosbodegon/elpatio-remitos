@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "remitos-el-bodegon",
+  "private_key_id": "4f58b3be02bc4b4b754aa8da79cb168dbf8a33ab",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCphvqp2xUnCqeh\nVuzbwIA06iLersvFwbXtTtOp7apZ3YRYNcSIkq9lTEOdWBEk5mkuhD57ShaAMvP3\nwKbPI6pSM7LV/cJgDi26/nDWoz5+IcFMd5+hdSMgahqa3ey5TMQPu9qjPjWC4A5t\nCiY0ylMrCMJl50O7NLM0SSoDHYquaFvqOWwR6q24KOvS4YsxQffVrv0ld7DIJJBo\nB7dTM6W12hDkGLC6uKYFvo481U120Bfbr7Ji12hLXucQ403ysginileT6p+iqAlI\nVBdfKGIJoVOj5IvzUPYwJp1f/m4Re4Z0OUH5RNnt0qKRBCDUAECKDNcSNowxCFC1\nkVvPz+o7AgMBAAECggEADOB11cUQXEDQ7s5de2up0Vsffu6kB8do/DeKmFO3JtBO\npyyeWwlZTUZ3tFHmK3lc7+2XmWHNR7uXEHCPuxgobcoDgYGe7BDnpFaDV6paqtYB\nir9jXq45FtM4Zh8JRiHwmolYWCH3ipNeRSYKNORRYOlvarIgUO311rjf+hCaYhjn\nfS/k5VQT2th7Tql096UhWVCNy7iiyNSZcsy52rbY2iHdm8QfsUqledlqDQGXfGIC\n04bgxovZVt241b+SZKFXOyMjkNo5xTOPeUytoVL/aneUAlFTgSuawzWQvg1m3nSg\nBGV/JgWQ9aEJUKgbO6F0m+rkxBOC1/+d8ojWa8I4gQKBgQDdjh9/1bBaupamlIV6\nSCgvfku2xwlFVBygqz8iMeyekRVovsNXXcuK72D38II7om7iQPCGBK9Zh24KizTP\nrUTRNHXR7Mqf4w7vAD8IQS/aAdqZn1mnJgryx+lwGzz60+lycV3Frokg5jOO62JZ\noWaq89TiB4sROTtw1oIOXNesWwKBgQDD4iZdGsAtZuAE5uVKWTR5Hzw8lW9sGQnG\nApyHK7t6sxRHLMCm8aIwjtzsd4p7W43JBBU+ztnK8uPQhAPahQDRMIP6ZBNrQkFV\nr6WfNp+GnjLM2Fmi81/vg8leClP3uNBh672ULbEubQjCt8OE+WDmdg0iqIjFj7CX\nw47KYmCfoQKBgAL7UK01wQPXkwN26Dz3D6Nj/bzd/N/z+9alt1nMdjTEGxenyZU5\na+3YvuNXV0laLEfbO+Fx2rJHwlFeAj3xRQXTwOosV6XDNoY86JxB1FUIxVpf7KL1\nPhx6WEfr9ewiQfgKUorAiJPqxTLdNBuksm8GjQzlsRdwP76LBIEQ+s4VAoGAdbDa\n+/WmoaC92DQib5lJPbzWpE/ksj4Y8S+AfHZ6Hi6acGkjFyr3F9W+RxVLzvIjLjOV\n0DbYBGgLGK0444ImC4nqwfZ+9GLKfoEaMZ7QGkHSo+EZeh5f9bhotGfgK2aPTUYm\nkXEik5JPQS7H+o0a+1zSZ5B7HLhIkeadVFvnUgECgYA3uObZmGtglC+ucZ2lghYo\nBsccoJS36kqOiuDar0gt/sEwoiECQzzdk7mdaAxLLvchIlEgsduIV6/vQq88VRq7\navq7jbUXu1QRadIiqJVXloThNqV98q7ryk9OPJzhgiZXnYiCuUxdHx6sX4TPcztQ\ncFAJM7/KaycCNB6V3VIitg==\n-----END PRIVATE KEY-----\n",
+  "client_email": "remitos-app@remitos-el-bodegon.iam.gserviceaccount.com",
+  "client_id": "117219117316162090301",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/remitos-app%40remitos-el-bodegon.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
