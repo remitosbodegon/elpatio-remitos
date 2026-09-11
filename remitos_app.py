@@ -305,21 +305,11 @@ def guardar_json(ruta, datos):
 def obtener_credenciales():
     try:
         from google.oauth2.service_account import Credentials
-        clave = {
-            "type": "service_account",
-            "project_id": "remitos-el-bodegon",
-            "private_key_id": "3e4433186ed999ad7358570907ecda7bf492596f",
-            "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDjz8kRG9VOEwyN\n4th34W8jS5aW7p2TXyG7s3TPp/IeT3glnBfYkzBVxsm315TvzspSnVFj6I36i/Nd\n2rM4rHcGO6nOH7bYSWKRgGDiLqjWOIz0PWV465mgg0QI8NUjNV1zMHFUDgeABBi4\nvvhlxcK1TIVTOi6wC2goIFHgEs3rE+7DX7+xGFX0My3oO1SCB5cLxs4g1OipYezd\n0adZf4h8PkEtLrYBzbk1j6wNmukUtQZPQV3w7paOfEjfecBDv8LygpDR6STWTyCY\n78SfISDaU/l43t6hne3ZwFmajAnQtoWsW8gsTzV90f1X6T3Fe4QbpdsP7287g3T4\nTz038hGjAgMBAAECggEAZeMluzgmk2+jmsXNKPizWybQaBq6cRIIJUniwYkMmY/T\nXYbNh3h1ErgAue96VjK3fHGN2FBHR7pWEzDgHUXNSgVfMagvf9Z6djbjneVeb8kF\nCat3+bftksOCpzkHKmMQs5cD6KMJqbCrWd1XfTUQm0NpEcsg3G2NnPyvgbcHT85X\nPKcc/7HZe+vM1D1TKcnqdtbQZq4aBV68Fm8Sxa/+BJXPtx5P5tcH8GfCw0Z51QXB\n2OB3Gs5lUQuDh5/Kx0joUnLY8hJ9dcts7ghBpl/9srwm71EEPf5CxUhzvZ67ZYcS\n0Qv47yQ23tyDVETJk0ZwcnpgaKl7uvY6qQFU3aENyQKBgQD6vPBakSqvdHPqaHfK\nq9vwKkR+jFr7Z6kizQrN3rnaBW3apKKi3+bFw0j90/o0qgiphNVG1nF6n+7QDTU+\n9QCtqvRhx6zP931HhmLVxpQvkkxLhp9qr5Y4d8ninVJbMQfIpJe8aIVK8djOec0p\n1f0ABNQvp36xayKLIxOkLK2llwKBgQDol61dgG5F9whVduOJNys0SQVjMSrM0Jft\npWRLTVlf7HPn2TRnSE5Ir4ebaXPfYhvg2c8FASE365NqLGGjURt5V0ih0CszHH2u\neR69aAjZmyko1BcNu3THob6g7ceU/wSZPNf8VLoU3Kmot2rZuS/Bgb3B2FchUwwR\nEEzmnnpt1QKBgQDMcNmZPtwLC2yoKF3kRpSiEhSfCln0uuTRl1XD3mKzPdIAgFSL\ncPx9K2mMbRaJckp1zfUIOTl1vom94ccUejf/YnC4eVKSjzz64LwdijixQRwsSKwb\nFOfrSuC1gYjxCd1K38lIugBUxzT7xZxfDDepmEZaRLusdapIwGT3a+Z6KQKBgFS3\nGf/aTU/SYAiw2sMZgvTyO7IbMFmVCCEYgmUi8RCNENI7PGj53vl+ZUfnqrqMA1ds\nPYi3FqBFf1XGgHF5kyYo8l1tcq6VC/nGR7n48HBBoUYrqZHo2unzMXlv4aeVEtm1\nXX2cZoI+tNSsqZBPcONsG+9EmseadeSpKTk+M51ZAoGANCEmuamqI1FzOEkj0sUT\nHLAoFGmb11aw8uXwmXJdtG+cfmwS4RqJZvz56xtC35I30WUyTNFOXinkZlq7EWhp\nX4ahfQAzUmChTm5CkiG497SC1VphgmceN9f2lLRPatmbDqTuCa59wlR/oCmSQyFe\n/ax8N1nKB4vTfCx+UR6Z6jQ=\n-----END PRIVATE KEY-----\n",
-            "client_email": "remitos-app@remitos-el-bodegon.iam.gserviceaccount.com",
-            "client_id": "117219117316162090301",
-            "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-            "token_uri": "https://oauth2.googleapis.com/token",
-            "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-            "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/remitos-app%40remitos-el-bodegon.iam.gserviceaccount.com"
-        }
-        return Credentials.from_service_account_info(clave, scopes=ALCANCE_GOOGLE)
+        import json
+        # Leemos directo desde el archivo JSON que subiste a GitHub
+        return Credentials.from_service_account_file("clave_google.json", scopes=ALCANCE_GOOGLE)
     except Exception as e:
-        st.error(f"❌ Error de credenciales: {str(e)[:100]}")
+        st.error(f"❌ Error: {str(e)[:100]}")
         return None
 
 def conectar_google_sheets():
