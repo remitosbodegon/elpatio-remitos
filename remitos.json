@@ -1,0 +1,29 @@
+[
+  {
+    "numero": 1,
+    "fecha": "11/09/2026",
+    "empresa": "Peduzzi",
+    "telefono": "2996588677",
+    "cantidad": 1,
+    "recibe": "asd adsad ",
+    "pdf_url": "https://remitosbodegon.github.io/mis-remitos/remito_0001.pdf"
+  },
+  {
+    "numero": 2,
+    "fecha": "11/09/2026",
+    "empresa": "Peduzzi",
+    "telefono": "2996588677",
+    "cantidad": 1,
+    "recibe": "asdasd ",
+    "pdf_url": "https://remitosbodegon.github.io/mis-remitos/remito_0002.pdf"
+  },
+  {
+    "numero": 3,
+    "fecha": "11/09/2026",
+    "empresa": "Peduzzi",
+    "telefono": "2996588677",
+    "cantidad": 1,
+    "recibe": "adsa asdad ",
+    "pdf_url": "https://remitosbodegon.github.io/mis-remitos/remito_0003.pdf"
+  }
+]
