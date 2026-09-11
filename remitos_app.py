@@ -69,11 +69,157 @@ if "remito_generado" not in st.session_state:
 # ──────────────────────────────────────────────────
 # ESTILO
 # ──────────────────────────────────────────────────
-st.set_page_config(page_title=TITULO_APP, page_icon="recursos/icono-app.png", layout="wide")
-# ÍCONO PERSONALIZADO SIN ERROR DE NOMBRE
+st.set_page_config(page_title=TITULO_APP, page_icon="🍽️", layout="wide", initial_sidebar_state="collapsed")
+
+# ✅ TU LOGO COMO ÍCONO
 st.markdown("""
 <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/remitosbodegon/mis-remitos/main/recursos/icono-app.png">
 <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/remitosbodegon/mis-remitos/main/recursos/icono-app.png?v=4">
+""", unsafe_allow_html=True)
+
+st.markdown(f"""
+<style>
+    * {{ box-sizing: border-box; }}
+    .stApp {{
+        background-color: {FONDO_APP};
+        color: {TEXTO_CLARO};
+    }}
+    section[data-testid="stSidebar"] {{ display: none !important; }}
+    .encabezado {{
+        background-color: {FONDO_TARJETA};
+        padding: 28px 20px;
+        border-radius: 24px;
+        margin-bottom: 28px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.35);
+        text-align: center;
+    }}
+    .encabezado-texto h1 {{
+        margin: 0;
+        font-size: 28px;
+        font-weight: 900;
+        letter-spacing: 2px;
+        color: {DORADO_CLARO};
+    }}
+    .encabezado-texto p {{
+        margin: 8px 0 0 0;
+        color: {TEXTO_GRIS};
+        font-size: 15px;
+        letter-spacing: 1px;
+    }}
+    .tarjeta, .nav-card {{
+        background-color: {FONDO_TARJETA};
+        border: 1px solid {BORDE_SUAVE};
+        border-radius: 16px;
+        padding: 24px 28px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+    }}
+    .tarjeta h2 {{
+        color: {TEXTO_CLARO} !important;
+        font-size: 20px;
+        margin-top: 0;
+        margin-bottom: 20px;
+    }}
+    .tarjeta label, .stMarkdown p {{
+        color: {TEXTO_GRIS} !important;
+        font-weight: 500;
+    }}
+    .stMarkdown, .stMarkdown span {{
+        color: {TEXTO_CLARO} !important;
+    }}
+    div[data-testid="stTextInput"] > div > input,
+    div[data-testid="stNumberInput"] > div > input,
+    div[data-testid="stSelectbox"] > div > div > div {{
+        background-color: {FONDO_CAMPOS} !important;
+        color: {TEXTO_CLARO} !important;
+        border: 2px solid {BORDE_SUAVE} !important;
+        border-radius: 10px !important;
+        padding: 12px 14px !important;
+    }}
+    input::placeholder {{
+        color: {TEXTO_GRIS} !important;
+    }}
+    button[kind="secondary"] {{
+        background-color: {FONDO_CAMPOS} !important;
+        color: {TEXTO_CLARO} !important;
+        border: 2px solid {BORDE_SUAVE} !important;
+        border-radius: 12px !important;
+        font-weight: 600 !important;
+    }}
+    button[kind="secondary"]:hover {{
+        border-color: {DORADO} !important;
+        color: {DORADO_CLARO} !important;
+    }}
+    button[kind="primary"] {{
+        background: linear-gradient(135deg, {DORADO}, {DORADO_CLARO}) !important;
+        color: #000 !important;
+        border-radius: 12px !important;
+        font-weight: 700 !important;
+    }}
+    button[kind="primary"]:disabled {{
+        background-color: {BORDE_SUAVE} !important;
+        color: {TEXTO_GRIS} !important;
+    }}
+    hr {{
+        border: none;
+        height: 2px;
+        background: {BORDE_SUAVE};
+        margin: 24px 0;
+    }}
+    .caja-link-pdf {{
+        background-color: {FONDO_CAMPOS};
+        border: 2px solid {DORADO};
+        border-radius: 12px;
+        padding: 16px;
+        margin: 16px 0;
+    }}
+    .caja-link-pdf strong {{
+        color: {DORADO_CLARO};
+    }}
+    .caja-link-pdf a {{
+        color: {DORADO_CLARO} !important;
+    }}
+    .aviso-espera {{
+        display: inline-block;
+        margin-left: 12px;
+        padding: 6px 14px;
+        background: linear-gradient(90deg, #2a5a48, {VERDE_LOGO});
+        color: white;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: 600;
+        animation: pulsar 1.2s infinite;
+    }}
+    .aviso-listo {{
+        display: inline-block;
+        margin-left: 12px;
+        padding: 6px 14px;
+        background: #25a75b;
+        color: white;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: 600;
+    }}
+    @keyframes pulsar {{
+        0% {{ opacity: 1; }}
+        50% {{ opacity: 0.5; }}
+        100% {{ opacity: 1; }}
+    }}
+    .stAlert {{
+        background-color: {FONDO_TARJETA} !important;
+        border: 1px solid {BORDE_SUAVE} !important;
+        color: {TEXTO_CLARO} !important;
+    }}
+</style>
+""", unsafe_allow_html=True)
+
+st.markdown(f"""
+<div class="encabezado">
+    <div class="encabezado-texto">
+        <h1>{NOMBRE_NEGOCIO}</h1>
+        <p>{SUBTITULO}</p>
+    </div>
+</div>
 """, unsafe_allow_html=True)
 
 # ──────────────────────────────────────────────────
