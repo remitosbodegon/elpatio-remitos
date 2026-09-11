@@ -7,14 +7,5 @@
     "cantidad": 17,
     "recibe": "Gustavo Navarrete",
     "pdf_url": "https://remitosbodegon.github.io/mis-remitos/remito_0001.pdf"
-  },
-  {
-    "numero": 2,
-    "fecha": "11/09/2026",
-    "empresa": "Empresa  Prueba",
-    "telefono": "2996588677",
-    "cantidad": 1,
-    "recibe": "Gustavo navarrete",
-    "pdf_url": "https://remitosbodegon.github.io/mis-remitos/remito_0002.pdf"
   }
 ]
