@@ -1,32 +1,33 @@
 # -*- coding: utf-8 -*-
 """
-🍽️ EL BODEGÓN — Sistema de Remitos de Viandas
+🍽️ EL PATIO GROUP 427 — Sistema de Remitos de Viandas
 ✅ Mensaje WhatsApp EXACTO como querés
 ✅ Botón BORRAR en Historial 🗑️
 ✅ WhatsApp APARECE ENSEGUIDA — PDF espera 30s
 ✅ Archivo remitos.json se crea solo al generar el primer remito
 """
 
-FONDO_APP        = "#1C3C30"
-FONDO_TARJETA    = "#265040"
-FONDO_CAMPOS     = "#306250"
+FONDO_APP        = "#0B3D2E"   # ← nuevo verde oscuro pedido
+FONDO_TARJETA    = "#1D4B3A"   # un tono más claro para dar profundidad sobre el fondo nuevo
+FONDO_CAMPOS     = "#26604A"
 TEXTO_CLARO      = "#F7EFE4"
 TEXTO_GRIS       = "#C9BFB3"
-BORDE_SUAVE      = "#408068"
+BORDE_SUAVE      = "#3C7C63"
 VERDE_LOGO       = "#009670"
 DORADO           = "#D4B86A"
 DORADO_CLARO     = "#EAD78A"
 VERDE_WSP        = "#25D366"
 RGB_DORADO       = (212, 184, 106)
-RGB_VERDE_HEADER = (0, 150, 112)
-RGB_VERDE_LINEAS = (64, 128, 104)
+RGB_VERDE_HEADER = (11, 61, 46)     # = #0B3D2E, usado también en el encabezado del PDF
+RGB_VERDE_LINEAS = (60, 124, 99)
 CREMA_FONDO      = (247, 239, 228)
 
-NOMBRE_NEGOCIO     = "EL BODEGÓN"
-TITULO_APP         = "Remitos - El Bodegón"
+NOMBRE_NEGOCIO     = "EL PATIO GROUP 427"
+TITULO_APP         = "Remitos - El Patio Group 427"
 SUBTITULO          = "Sistema de Entrega de Viandas"
+EMPRESA_SLUG       = "ElPatioGroup427"   # se usa para nombrar los archivos PDF
 
-GITHUB_USUARIO     = "remitosbodegon"
+GITHUB_USUARIO     = "remitosbodegon"    # ⚠️ usuario/repo reales de GitHub: actualizalos solo si los renombraste ahí
 GITHUB_REPO        = "mis-remitos"
 GITHUB_RAMA        = "main"
 
@@ -48,7 +49,7 @@ import numpy as np
 from fpdf import FPDF
 from streamlit_drawable_canvas import st_canvas
 
-RUTA_LOGO = os.path.join(CARPETA_RECURSOS, "logo_bodegon.png") if os.path.exists(os.path.join(CARPETA_RECURSOS, "logo_bodegon.png")) else None
+RUTA_LOGO = os.path.join(CARPETA_RECURSOS, "logo_patio.png") if os.path.exists(os.path.join(CARPETA_RECURSOS, "logo_patio.png")) else None
 
 os.makedirs(CARPETA_RECURSOS, exist_ok=True)
 os.makedirs(CARPETA_PDF, exist_ok=True)
@@ -84,12 +85,13 @@ st.markdown(f"""
     }}
     section[data-testid="stSidebar"] {{ display: none !important; }}
     .encabezado {{
-        background-color: {FONDO_TARJETA};
+        background: linear-gradient(135deg, {FONDO_APP}, {FONDO_TARJETA});
         padding: 28px 20px;
         border-radius: 24px;
         margin-bottom: 28px;
         box-shadow: 0 8px 32px rgba(0,0,0,0.35);
         text-align: center;
+        border: 1px solid {BORDE_SUAVE};
     }}
     .encabezado-texto h1 {{
         margin: 0;
@@ -307,7 +309,7 @@ def subir_pdf_a_github(ruta_archivo, numero_remito):
     if not token:
         st.error("❌ Falta token de GitHub")
         return ""
-    nombre = f"remito_{numero_remito:04d}.pdf"
+    nombre = f"{EMPRESA_SLUG}_remito_{numero_remito:04d}.pdf"
     url = f"https://api.github.com/repos/{GITHUB_USUARIO}/{GITHUB_REPO}/contents/{nombre}"
     headers = {"Authorization": f"Bearer {token}", "Accept": "application/vnd.github+json"}
     try:
@@ -442,7 +444,7 @@ def crear_pdf(numero, fecha, emp, tel, cant, recibe, img_firma):
     else:
         pdf.set_xy(margen, y + 25)
         pdf.cell(ancho - margen * 2, 6, "_______________________________", align="L")
-    ruta_pdf = os.path.join(CARPETA_PDF, f"remito_{numero:04d}.pdf")
+    ruta_pdf = os.path.join(CARPETA_PDF, f"{EMPRESA_SLUG}_remito_{numero:04d}.pdf")
     pdf.output(ruta_pdf)
     return ruta_pdf
 
