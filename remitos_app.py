@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 """
 🍽️ EL BODEGÓN — Sistema de Remitos de Viandas
-✅ SIN Google Sheets ni Drive
-✅ WhatsApp APARECE ENSEGUIDA — Solo el PDF espera 30s
+✅ Mensaje WhatsApp EXACTO como querés
+✅ Botón BORRAR en Historial 🗑️
+✅ WhatsApp APARECE ENSEGUIDA — PDF espera 30s
+✅ Archivo remitos.json se crea solo al generar el primer remito
 """
 
 FONDO_APP        = "#1C3C30"
@@ -239,7 +241,7 @@ st.markdown("</div>", unsafe_allow_html=True)
 st.markdown("---")
 
 # ──────────────────────────────────────────────────
-# FUNCIONES DE GUARDADO
+# FUNCIONES DE GUARDADO Y SUBIDA A GITHUB
 # ──────────────────────────────────────────────────
 def cargar_json(ruta, valor_default):
     if not os.path.exists(ruta):
@@ -258,6 +260,7 @@ def guardar_json(ruta, datos):
         with open(ruta_tmp, "w", encoding="utf-8") as f:
             json.dump(datos, f, ensure_ascii=False, indent=2)
         os.replace(ruta_tmp, ruta)
+        subir_archivo_a_github(ruta)  # ✅ Sube el archivo a GitHub automáticamente
     except Exception as e:
         if os.path.exists(ruta_tmp):
             os.remove(ruta_tmp)
@@ -272,9 +275,29 @@ def obtener_token_github():
             return f.read().strip()
     return None
 
-# ──────────────────────────────────────────────────
-# SUBIR PDF A GITHUB
-# ──────────────────────────────────────────────────
+def subir_archivo_a_github(ruta_archivo):
+    """Sube remitos.json al repositorio para que aparezca en GitHub"""
+    token = obtener_token_github()
+    if not token:
+        return False
+    nombre_archivo = os.path.basename(ruta_archivo)
+    try:
+        with open(ruta_archivo, "r", encoding="utf-8") as f:
+            contenido = f.read()
+        contenido_b64 = base64.b64encode(contenido.encode("utf-8")).decode()
+        url = f"https://api.github.com/repos/{GITHUB_USUARIO}/{GITHUB_REPO}/contents/{nombre_archivo}"
+        headers = {"Authorization": f"Bearer {token}", "Accept": "application/vnd.github+json"}
+        resp = requests.get(url, headers=headers, params={"ref": GITHUB_RAMA})
+        sha = resp.json().get("sha") if resp.status_code == 200 else None
+        body = {"message": f"Actualizar {nombre_archivo}", "content": contenido_b64, "branch": GITHUB_RAMA}
+        if sha:
+            body["sha"] = sha
+        resp = requests.put(url, headers=headers, json=body)
+        return resp.status_code in (200, 201)
+    except Exception as e:
+        print(f"Error subiendo: {e}")
+        return False
+
 def subir_pdf_a_github(ruta_archivo, numero_remito):
     token = obtener_token_github()
     if not token:
@@ -313,15 +336,15 @@ def hay_firma(img):
         return False
 
 # ──────────────────────────────────────────────────
-# MENSAJE DE WHATSAPP
+# ✅ MENSAJE DE WHATSAPP EXACTO COMO QUERÉS
 # ──────────────────────────────────────────────────
 def mensaje_whatsapp(num, emp, fecha, recibe, pdf=""):
     return (
-        f"● REMITO N° {num:04d} — Entrega a: {emp}\n\n"
-        f"● Se le envía el remito de las viandas entregadas el día {fecha}.\n\n"
-        f"● Recibe: {recibe}\n\n"
-        f"● VER REMITO EN PDF:\n{pdf}\n\n"
-        f"¡Gracias por su compra att. El Bodegon!"
+        f"📄 REMITO N° {num:04d} — Entrega a: {emp}\n"
+        f"✅ Se le envía el remito de las viandas entregadas el día {fecha}.\n"
+        f"👤 Recibe: {recibe} \n"
+        f"🔗 VER REMITO EN PDF:\n{pdf}\n\n"
+        f"¡Gracias por su compra!"
     )
 
 def enlace_whatsapp(tel, msg):
@@ -454,7 +477,7 @@ def pantalla_empresas():
     st.markdown("</div>", unsafe_allow_html=True)
 
 # ──────────────────────────────────────────────────
-# PANTALLA: NUEVO REMITO — CORREGIDO ✅
+# PANTALLA: NUEVO REMITO
 # ──────────────────────────────────────────────────
 def pantalla_nuevo_remito():
     st.markdown(f"""<div class="tarjeta"><h2>📋 Generar Nuevo Remito</h2>""", unsafe_allow_html=True)
@@ -522,12 +545,12 @@ def pantalla_nuevo_remito():
             "pdf_url": enlace_pdf
         }
         remitos.append(remito)
-        guardar_json(ARCHIVO_REMITOS, remitos)
+        guardar_json(ARCHIVO_REMITOS, remitos)  # ✅ Se guarda Y SE SUBE A GITHUB
         
         st.session_state.remito_generado = True
         st.success(f"✅ Remito N° {numero:04d} generado y guardado correctamente!")
         
-        # ✅ WHATSAPP APARECE ENSEGUIDA — SIN ESPERAR
+        # ✅ WHATSAPP APARECE ENSEGUIDA
         msj = mensaje_whatsapp(numero, emp_datos["nombre"], fecha, recibe, enlace_pdf)
         link_wsp = enlace_whatsapp(emp_datos["telefono"], msj)
         st.markdown(f"""
@@ -550,7 +573,6 @@ def pantalla_nuevo_remito():
             </div>
             """, unsafe_allow_html=True)
         
-        # Contar 30 segundos y cambiar el aviso
         for segundo in range(30):
             time.sleep(1)
         
@@ -567,34 +589,52 @@ def pantalla_nuevo_remito():
     st.markdown("</div>", unsafe_allow_html=True)
 
 # ──────────────────────────────────────────────────
-# PANTALLA: HISTORIAL
+# ✅ PANTALLA: HISTORIAL CON BOTÓN BORRAR 🗑️
 # ──────────────────────────────────────────────────
 def pantalla_historial():
     st.markdown(f"""<div class="tarjeta"><h2>📜 Historial de Remitos</h2>""", unsafe_allow_html=True)
     remitos = cargar_json(ARCHIVO_REMITOS, [])
     
     if not remitos:
-        st.info("No hay remitos generados todavía")
+        st.info("No hay remitos generados todavía. Al generar el primero se creará el archivo remitos.json en GitHub.")
     else:
-        for r in reversed(remitos):
-            with st.expander(f"📋 Remito N° {r['numero']:04d} — {r['empresa']} — {r['fecha']}"):
-                st.write(f"📅 **Fecha:** {r['fecha']}")
-                st.write(f"🏢 **Empresa:** {r['empresa']}")
-                st.write(f"📞 **Teléfono:** {r['telefono']}")
-                st.write(f"🍽️ **Cantidad:** {r['cantidad']} viandas")
-                st.write(f"👤 **Recibe:** {r.get('recibe', 'No registrado')}")
-                if r.get("pdf_url"):
-                    st.markdown(f"📄 **PDF:** [Ver remito]({r['pdf_url']})")
-                    msj = mensaje_whatsapp(r['numero'], r['empresa'], r['fecha'], r.get('recibe', ''), r['pdf_url'])
-                    link_wsp = enlace_whatsapp(r['telefono'], msj)
-                    st.markdown(f"""
-                    <a href="{link_wsp}" target="_blank" style="
-                        display:inline-block; padding:8px 16px;
-                        background:{VERDE_WSP}; color:white !important;
-                        border-radius:8px; text-decoration:none;
-                        font-weight:bold; margin-top:8px;
-                    ">📲 Enviar por WhatsApp</a>
-                    """, unsafe_allow_html=True)
+        indices_a_borrar = []
+        
+        for i, r in enumerate(reversed(remitos)):
+            indice_real = len(remitos) - 1 - i
+            
+            col_exp, col_del = st.columns([0.92, 0.08])
+            with col_exp:
+                with st.expander(f"📋 Remito N° {r['numero']:04d} — {r['empresa']} — {r['fecha']}"):
+                    st.write(f"📅 **Fecha:** {r['fecha']}")
+                    st.write(f"🏢 **Empresa:** {r['empresa']}")
+                    st.write(f"📞 **Teléfono:** {r['telefono']}")
+                    st.write(f"🍽️ **Cantidad:** {r['cantidad']} viandas")
+                    st.write(f"👤 **Recibe:** {r.get('recibe', 'No registrado')}")
+                    if r.get("pdf_url"):
+                        st.markdown(f"📄 **PDF:** [Ver remito]({r['pdf_url']})")
+                        msj = mensaje_whatsapp(r['numero'], r['empresa'], r['fecha'], r.get('recibe', ''), r['pdf_url'])
+                        link_wsp = enlace_whatsapp(r['telefono'], msj)
+                        st.markdown(f"""
+                        <a href="{link_wsp}" target="_blank" style="
+                            display:inline-block; padding:8px 16px;
+                            background:{VERDE_WSP}; color:white !important;
+                            border-radius:8px; text-decoration:none;
+                            font-weight:bold; margin-top:8px;
+                        ">📲 Enviar por WhatsApp</a>
+                        """, unsafe_allow_html=True)
+            with col_del:
+                if st.button("🗑️", key=f"borrar_{i}", help="Borrar este remito"):
+                    indices_a_borrar.append(indice_real)
+        
+        # Ejecutar borrado
+        if indices_a_borrar:
+            todos = cargar_json(ARCHIVO_REMITOS, [])
+            for idx in sorted(indices_a_borrar, reverse=True):
+                todos.pop(idx)
+            guardar_json(ARCHIVO_REMITOS, todos)  # ✅ Se actualiza Y SE SUBE A GITHUB
+            st.success("✅ Remito borrado y eliminado de GitHub! Recargá la página.")
+    
     st.markdown("</div>", unsafe_allow_html=True)
 
 # ──────────────────────────────────────────────────
