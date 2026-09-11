@@ -23,7 +23,7 @@ RGB_VERDE_LINEAS = (64, 128, 104)
 CREMA_FONDO      = (247, 239, 228)
 
 NOMBRE_NEGOCIO     = "EL BODEGÓN"
-TITULO_APP         = "🍽️ Remitos - El Bodegón"
+TITULO_APP         = "Remitos - El Bodegón"
 SUBTITULO          = "Sistema de Entrega de Viandas"
 
 GITHUB_USUARIO     = "remitosbodegon"
