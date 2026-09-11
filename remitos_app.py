@@ -2,7 +2,8 @@
 """
 🍽️ EL BODEGÓN — Sistema de Remitos de Viandas
 ===============================================
-✅ SIN Google — Guarda en archivo JSON del repositorio
+✅ SIN Google — Guarda en JSON y lo sube a GitHub automáticamente
+✅ Botón BORRAR que actualiza el archivo en GitHub
 ✅ Buscador de remitos
 ✅ Fecha y HORA automáticas
 ✅ Fondo oscuro / PDF / WhatsApp
@@ -21,7 +22,7 @@ COLOR_TEXTO = "#E0E0E0"
 COLOR_ACENTO = "#4CAF50"
 COLOR_CAJAS = "#1E1E1E"
 
-# Configuración GitHub Pages (donde se publican los PDFs)
+# Configuración GitHub
 USUARIO_GITHUB = "remitosbodegon"
 REPO_GITHUB = "mis-remitos"
 ENLACE_BASE = f"https://{USUARIO_GITHUB}.github.io/{REPO_GITHUB}"
@@ -32,16 +33,18 @@ ENLACE_BASE = f"https://{USUARIO_GITHUB}.github.io/{REPO_GITHUB}"
 import streamlit as st
 import json
 import os
+import base64
+import requests
 from datetime import datetime
 from fpdf import FPDF
 
 # ==================================================
-# 💾 ARCHIVO DONDE SE GUARDAN TODOS LOS REMITOS
+# 💾 ARCHIVO Y FUNCIONES DE GUARDADO
 # ==================================================
 ARCHIVO_DATOS = "remitos.json"
 
 def cargar_remitos():
-    """Lee todos los remitos guardados del archivo JSON"""
+    """Lee los remitos guardados del archivo local"""
     try:
         if os.path.exists(ARCHIVO_DATOS):
             with open(ARCHIVO_DATOS, "r", encoding="utf-8") as f:
@@ -51,8 +54,40 @@ def cargar_remitos():
         st.error(f"Error leyendo historial: {str(e)[:60]}")
         return []
 
+def subir_archivo_a_github():
+    """Sube remitos.json al repositorio para que quede guardado para siempre"""
+    try:
+        token = st.secrets.get("GITHUB_TOKEN", "")
+        if not token:
+            return False
+        
+        with open(ARCHIVO_DATOS, "r", encoding="utf-8") as f:
+            contenido = f.read()
+        
+        contenido_b64 = base64.b64encode(contenido.encode("utf-8")).decode()
+        url = f"https://api.github.com/repos/{USUARIO_GITHUB}/{REPO_GITHUB}/contents/{ARCHIVO_DATOS}"
+        headers = {
+            "Authorization": f"token {token}",
+            "Content-Type": "application/json"
+        }
+        
+        resp = requests.get(url, headers=headers)
+        sha = resp.json().get("sha") if resp.status_code == 200 else None
+        
+        datos = {
+            "message": "Actualizar historial de remitos",
+            "content": contenido_b64,
+            "sha": sha
+        }
+        
+        resp = requests.put(url, headers=headers, json=datos)
+        return resp.status_code in (200, 201)
+    except Exception as e:
+        print(f"Error subiendo a GitHub: {e}")
+        return False
+
 def guardar_remito(datos_remito):
-    """Guarda un remito nuevo con fecha y hora automáticas"""
+    """Guarda remito nuevo, agrega fecha/hora y lo sube a GitHub"""
     remitos = cargar_remitos()
     ahora = datetime.now()
     datos_remito["fecha_creacion"] = ahora.strftime("%d/%m/%Y")
@@ -60,9 +95,11 @@ def guardar_remito(datos_remito):
     datos_remito["timestamp"] = ahora.strftime("%Y%m%d-%H%M%S")
     remitos.append(datos_remito)
     remitos = sorted(remitos, key=lambda x: x["timestamp"], reverse=True)
+    
     try:
         with open(ARCHIVO_DATOS, "w", encoding="utf-8") as f:
             json.dump(remitos, f, ensure_ascii=False, indent=2)
+        subir_archivo_a_github()
         return True
     except Exception as e:
         st.error(f"Error guardando: {str(e)[:60]}")
@@ -95,7 +132,7 @@ def generar_pdf_remito(numero, empresa, direccion, fecha, viandas, observaciones
     pdf = FPDF()
     pdf.add_page()
     pdf.set_font("Helvetica", "B", 16)
-    pdf.cell(0, 10, txt=f"REMITO DE ENTREGA DE VIANDAS", ln=True, align="C")
+    pdf.cell(0, 10, txt="REMITO DE ENTREGA DE VIANDAS", ln=True, align="C")
     pdf.set_font("Helvetica", "", 12)
     pdf.cell(0, 8, txt=NOMBRE_NEGOCIO, ln=True, align="C")
     pdf.ln(5)
@@ -137,12 +174,10 @@ def subir_pdf_y_obtener_enlace(nombre_archivo, numero_remito):
     try:
         with open(nombre_archivo, "rb") as f:
             contenido = f.read()
-        import base64
         contenido_b64 = base64.b64encode(contenido).decode()
 
         token = st.secrets.get("GITHUB_TOKEN", "")
         if not token:
-            st.warning("Token de GitHub no configurado")
             return f"{ENLACE_BASE}/{nombre_archivo}"
 
         url = f"https://api.github.com/repos/{USUARIO_GITHUB}/{REPO_GITHUB}/contents/{nombre_archivo}"
@@ -150,7 +185,6 @@ def subir_pdf_y_obtener_enlace(nombre_archivo, numero_remito):
             "Authorization": f"token {token}",
             "Content-Type": "application/json"
         }
-        import requests
         respuesta = requests.get(url, headers=headers)
         sha = respuesta.json().get("sha") if respuesta.status_code == 200 else None
 
@@ -160,10 +194,7 @@ def subir_pdf_y_obtener_enlace(nombre_archivo, numero_remito):
             "sha": sha
         }
         respuesta = requests.put(url, headers=headers, json=datos)
-        if respuesta.status_code in (200, 201):
-            return f"{ENLACE_BASE}/{nombre_archivo}"
-        else:
-            return f"{ENLACE_BASE}/{nombre_archivo}"
+        return f"{ENLACE_BASE}/{nombre_archivo}"
     except Exception as e:
         return f"{ENLACE_BASE}/{nombre_archivo}"
 
@@ -228,14 +259,14 @@ Saludos de {NOMBRE_NEGOCIO}"""
             }
 
             if guardar_remito(datos_remito):
-                st.success(f"✅ Remito N° {numero_remito:04d} generado y guardado!")
+                st.success(f"✅ Remito N° {numero_remito:04d} generado y guardado en GitHub!")
                 st.markdown(f"📄 [Ver PDF]({enlace_pdf})")
                 st.markdown(f"📱 [Enviar por WhatsApp]({enlace_whatsapp})")
             else:
                 st.error("No se pudo guardar el remito")
 
 # ──────────────────────────────────────────────────
-# PANTALLA 2: HISTORIAL CON BUSCADOR 🔍
+# PANTALLA 2: HISTORIAL CON BUSCADOR Y BORRAR 🗑️
 # ──────────────────────────────────────────────────
 else:
     st.header("📋 Historial de Remitos")
@@ -245,7 +276,7 @@ else:
     remitos = cargar_remitos()
 
     if not remitos:
-        st.info("Todavía no hay remitos guardados.")
+        st.info("Todavía no hay remitos guardados. Al generar el primero se creará el archivo remitos.json en GitHub.")
     else:
         if busqueda:
             busq = busqueda.lower()
@@ -260,13 +291,23 @@ else:
             st.warning("No se encontraron remitos con esa búsqueda.")
         else:
             st.info(f"Se encontraron {len(remitos)} remitos")
-            for r in remitos:
+            
+            indices_a_borrar = []
+            
+            for i, r in enumerate(remitos):
                 nro = r.get("numero", "??")
                 emp = r.get("empresa", "Sin nombre")
                 fch = r.get("fecha_creacion", "??/??/????")
                 hor = r.get("hora_creacion", "??:??")
 
-                with st.expander(f"📋 Remito N° {nro:04d} — {emp} — 📅 {fch} ⏰ {hor}"):
+                col1, col2 = st.columns([0.92, 0.08])
+                with col1:
+                    desplegar = st.expander(f"📋 Remito N° {nro:04d} — {emp} — 📅 {fch} ⏰ {hor}")
+                with col2:
+                    if st.button("🗑️", key=f"borrar_{i}", help="Borrar este remito"):
+                        indices_a_borrar.append(i)
+                
+                with desplegar:
                     st.write(f"**Empresa:** {emp}")
                     st.write(f"**Dirección:** {r.get('direccion_entrega', '---')}")
                     st.write(f"**Fecha Remito:** {r.get('fecha', fch)}")
@@ -282,3 +323,16 @@ else:
                         st.markdown(f"📄 [Abrir / Descargar PDF]({r['enlace_pdf']})")
                     if r.get("enlace_whatsapp"):
                         st.markdown(f"📱 [Enviar por WhatsApp]({r['enlace_whatsapp']})")
+
+            # Ejecutar borrado
+            if indices_a_borrar:
+                todos = cargar_remitos()
+                for idx in sorted(indices_a_borrar, reverse=True):
+                    todos.pop(idx)
+                try:
+                    with open(ARCHIVO_DATOS, "w", encoding="utf-8") as f:
+                        json.dump(todos, f, ensure_ascii=False, indent=2)
+                    subir_archivo_a_github()
+                    st.success("✅ Remito borrado y actualizado en GitHub! Recargá la página.")
+                except Exception as e:
+                    st.error(f"❌ No se pudo borrar: {str(e)[:60]}")
