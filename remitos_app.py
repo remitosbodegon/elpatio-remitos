@@ -69,7 +69,7 @@ if "remito_generado" not in st.session_state:
 # ──────────────────────────────────────────────────
 # ESTILO
 # ──────────────────────────────────────────────────
-st.set_page_config(page_title=TITULO_APP, page_icon="🍽️", layout="wide", initial_sidebar_state="collapsed")
+st.set_page_config(page_title=TITULO_APP, page_icon="", layout="wide", initial_sidebar_state="collapsed")
 
 # ✅ TU LOGO COMO ÍCONO
 st.markdown("""
