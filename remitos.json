@@ -1,1 +1,11 @@
-[]
+[
+  {
+    "numero": 1,
+    "fecha": "12/09/2026",
+    "empresa": "Prear",
+    "telefono": "2995231793",
+    "cantidad": 5,
+    "recibe": "Rodeigo",
+    "pdf_url": "https://remitosbodegon.github.io/elpatio-remitos/ElPatioRemitos_remito_0001.pdf"
+  }
+]
