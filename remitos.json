@@ -34,5 +34,14 @@
     "cantidad": 11,
     "recibe": "Cristian",
     "pdf_url": "https://remitosbodegon.github.io/elpatio-remitos/ElPatioRemitos_remito_0004.pdf"
+  },
+  {
+    "numero": 5,
+    "fecha": "12/11/2026",
+    "empresa": "AVG",
+    "telefono": "2996101098",
+    "cantidad": 11,
+    "recibe": "Cristian",
+    "pdf_url": "https://remitosbodegon.github.io/elpatio-remitos/ElPatioRemitos_remito_0005.pdf"
   }
 ]
