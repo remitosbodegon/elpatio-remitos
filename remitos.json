@@ -43,5 +43,14 @@
     "cantidad": 11,
     "recibe": "Cristian",
     "pdf_url": "https://remitosbodegon.github.io/elpatio-remitos/ElPatioRemitos_remito_0005.pdf"
+  },
+  {
+    "numero": 6,
+    "fecha": "13/11/2026",
+    "empresa": "AVG",
+    "telefono": "2996101098",
+    "cantidad": 9,
+    "recibe": "Cintia ayelen aguirre",
+    "pdf_url": "https://remitosbodegon.github.io/elpatio-remitos/ElPatioRemitos_remito_0006.pdf"
   }
 ]
